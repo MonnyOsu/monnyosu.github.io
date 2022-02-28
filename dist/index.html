@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+    <script src="https://kit.fontawesome.com/5ae35b0d77.js" crossorigin="anonymous"></script>
+    <title>Organiser</title>
+</head>
+
+<body>
+    <header class="heading">
+        <div class="logo-wrapper">
+            <i class="fa-solid fa-list-check fa-lg header-logo"></i>
+        </div>
+
+        <div class="page-title">
+            Organiser
+        </div>
+
+    </header>
+
+    <div class="sidebar">
+
+        <h2 class="projects-header">Projects</h2>
+        <ul class="project-list" id="project-list">
+
+        </ul>
+
+        <form action="" data-new-project-form>
+            <input type="text" class="new-project-input" placeholder="New Project" aria-label="new project"
+                data-new-project-input>
+            <button class="new-project-button">+</button>
+        </form>
+
+    </div>
+
+    <div class="todo-list" data-task-display-container>
+        <div class="todo-header">
+            <h2 data-task-display-title></h2>
+        </div>
+
+        <div class="todo-body">
+            <div class="tasks" data-project-tasks>
+                <!-- <div class="task">
+                    <div class="task-text">
+                        <input type="checkbox" />
+                        <label for="" class='task-label'>
+                            <span class="custom-checkbox"></span>
+                            Task test
+                        </label>
+                    </div>
+                    <form action="#" data-due-date-form>
+                        <input type="date" class="due-date-input" data-due-date-input>
+                    </form>
+                    <div class="task-due-duration" data-task-due-duration></div>
+                </div> -->
+            </div>
+
+            <div class="new-task">
+                <form action="" data-new-task-form>
+                    <div class="new-task-name-container">
+                        <input type="text" class='new-task-name-input' placeholder="enter a new task"
+                            data-new-task-input>
+                        <button class='new-task-submit'>+</button>
+                    </div>
+                    <div class="new-task-date-container">
+                        <input type="datetime-local" class="new-task-date-input" data-new-date-input required>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="delete-tasks">
+            <button class="btn delete" data-delete-complete-tasks>Clear completed tasks</button>
+            <button class="btn delete" data-delete-project>Delete project</button>
+            <button class="btn delete" data-sort-button>Sort</button>
+        </div>
+    </div>
+
+    <template id='task-template'>
+        <div class="task">
+            <div class="task-text">
+                <input type="checkbox" data-task-checkbox />
+                <label for="" class='task-label'>
+                    <span class="custom-checkbox"></span>
+                </label>
+            </div>
+
+            <div class="task-date">
+                <div class="task-due-duration" data-task-due-duration></div>
+            </div>
+
+        </div>
+    </template>
+
+
+
+</body>
+
+</html>
