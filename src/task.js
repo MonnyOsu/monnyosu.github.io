@@ -1,4 +1,4 @@
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import { formatDistanceToNow, parseISO, isPast } from 'date-fns';
 
 
 export default function taskFactory(name, dueDate) {
@@ -11,11 +11,14 @@ export default function taskFactory(name, dueDate) {
 }
 
 function getDueDateLengthDays(task) {
-    return `Due in ${formatDistanceToNow(parseISO(task.dueDate))}`;
+    if (isPast(parseISO(task.dueDate))) {
+        return `Due ${formatDistanceToNow(parseISO(task.dueDate))} ago`
+    } else {
+        return `Due in ${formatDistanceToNow(parseISO(task.dueDate))}`
+    }
 }
+
 
 export {
-
     getDueDateLengthDays
 }
-

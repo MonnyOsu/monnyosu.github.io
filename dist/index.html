@@ -14,7 +14,7 @@
 <body>
     <header class="heading">
         <div class="logo-wrapper">
-            <i class="fa-solid fa-list-check fa-lg header-logo"></i>
+            <i class="fa-solid fa-list-check  header-logo"></i>
         </div>
 
         <div class="page-title">
@@ -24,17 +24,24 @@
     </header>
 
     <div class="sidebar">
-
-        <h2 class="projects-header">Projects</h2>
-        <ul class="project-list" id="project-list">
-
+        <ul class="default-projects-container" data-default-projects>
         </ul>
 
-        <form action="" data-new-project-form>
-            <input type="text" class="new-project-input" placeholder="New Project" aria-label="new project"
-                data-new-project-input>
-            <button class="new-project-button">+</button>
-        </form>
+        <div class="dropdown">
+            <button class="projects-header" data-projects-dropdown-button>Projects<i
+                    class="fa-solid fa-caret-down fa-lg dropdown-icon"></i></button>
+            <div class="dropdown-content" data-dropdown-content>
+                <ul class="project-list" id="project-list">
+                </ul>
+                <form action="" data-new-project-form>
+                    <input type="text" class="new-project-input" placeholder="New Project" aria-label="new project"
+                        data-new-project-input>
+                    <button class="new-project-button">+</button>
+                </form>
+            </div>
+        </div>
+
+
 
     </div>
 

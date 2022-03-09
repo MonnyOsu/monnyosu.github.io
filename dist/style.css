@@ -1,15 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,700;0,800;1,100;1,200;1,300;1,400;1,500&display=swap');
 
 :root {
-    --light-one: #F8F9FA;
-    --light-two: #E9ECEF;
+    --light-one: #edf2fb;
+    --light-two: #edf2fb;
     --medium-one: #CED4DA;
     --medium-two: #ADB5BD;
     --dark-one: #343A40;
     --dark-two: #212529;
     --font: 'Poppins', serif;
-    --primary: #D02224;
-    --sidebar: #FCEEEE;
+    --primary: #abc4ff;
+    --primary-two: #e2eafc;
+    --sidebar: #edf2fb;
 }
 
 *,
@@ -25,7 +26,7 @@ body {
     overflow: hidden;
     display: grid;
     grid:
-    "header header header header" 4em
+    "header header header header" 3em
     "projects projects tasks ......" auto /
     3em minmax(100px, 250px) minmax(300px, 1200px) 1fr;
     font-family: var(--font);
@@ -38,46 +39,116 @@ body {
     justify-content: flex-start;
     align-items: center;
     padding-left: 2em;
+    height: 3em;
     
 }
 
 .header-logo {
     margin-right: 1em;
-    color: black;
+    color: white;
+    text-shadow: 1px 1px #333;
 }
 
 
 .page-title {
     font-weight: 500;
     font-size: 1.5rem;
-    color: var(--light-one);
+    color: white;
+    text-shadow: 1px 1px #333;
 }
 
 .sidebar {
     grid-area: projects;
     background-color: var(--light-two);
-    padding-left: 2em;
+    padding-left: 1em;
     padding-top: 2em;
 }
 
+.default-projects-container {
+    list-style: none;
+}
+
+.default-projects-container li {
+    padding: 0.5em 0.3em 0.3em 1em;
+    font-weight: 500;
+    width: 92%;
+
+
+}
+
+.default-projects-container li:hover {
+    background: var(--primary-two);
+    border-radius: 5px;
+    
+}
+
+.dropodown {
+    position: relative;
+}
+
+.dropdown-content {
+    position: absolute;
+    max-width: 240px;
+    width: 235px;
+    padding-left: 1em;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    pointer-events: none;
+}
+
+.dropdown-content-active {
+    opacity: 1;
+    transform: translateY(0px);
+    pointer-events: auto;
+}
+
+@media screen and (max-width: 700px) {
+    .dropdown-content {
+        position: absolute;
+        width: 150px;
+    }
+}
+
 .projects-header {
-    padding-bottom: 1em;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 92%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5em 0.8em 0.5em 1em;
+}
+
+.projects-header:hover {
+    background: var(--primary-two);
+    border-radius: 5px;
+
+}
+
+.dropdown-icon {
+padding-right: 0.3em;
+margin-top: 0.5em;
 }
 
 .project-list {
     list-style: none;
+
 }
 
 .project-list li {
-    padding-bottom: 0.5em;
+    padding: 0.5em 0.3em 0.3em 1em;
 }
 
 form {
     display: flex;
+    padding-left: 0.4em;
 }
 
 .new-project-input {
-    width: 80%;
+    width: 100%;
     outline: none;
     border: none;
     background-color: var(--light-two);
@@ -97,6 +168,7 @@ form {
     font-size: 1rem;
     cursor: pointer;
     order: 1;
+    
 }
 .new-project-button {
     background-color: var(--light-two);
@@ -115,6 +187,10 @@ form {
 
 .todo-header {
     margin-bottom: 1em;
+}
+
+[data-task-display-title] {
+    font-weight: 500;
 }
 
 
@@ -270,6 +346,9 @@ form {
 }
 
 .active-project {
-    font-weight: 700;
-    color: var(--primary);
+
+    /* color: var(--primary); */
+    background: var(--primary-two);
+    border-radius: 5px;
+    
 }

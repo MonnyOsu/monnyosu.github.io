@@ -1,8 +1,11 @@
 import projectFactory from "./project.js";
 import taskFactory from "./task.js";
 import { getDueDateLengthDays } from "./task.js";
+import { isToday, isThisWeek, parseISO } from 'date-fns';
 
 const defaultProjectsContainer = document.querySelector('[data-default-projects]')
+const projectsDropdownButton = document.querySelector('[data-projects-dropdown-button]')
+const projectsDropdownContent = document.querySelector('[data-dropdown-content]')
 const projectContainer = document.getElementById('project-list');
 const newProjectForm = document.querySelector('[data-new-project-form]')
 const newProjectInput = document.querySelector('[data-new-project-input')
@@ -22,22 +25,19 @@ const LOCAL_STORAGE_PROJECT_KEY = 'projects.list';
 const LOCAL_STORAGE_PROJECT_ID_KEY = 'project.selectedProjectId'
 
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY)) || [];
-
+let defaultProjects = []
 let selectedProjectId = localStorage.getItem(LOCAL_STORAGE_PROJECT_ID_KEY) || null;
 
-// const todayTasks = projects.forEach((project) => {
-//     project.tasks.filter(task => {
-//         if (isToday(parseISO(task.dueDate))) {
-//             return task;
-//         }
-//     })
-// })
-
-// projects[0].tasks.push(todayTasks)
 
 
 // Event listners
 
+defaultProjectsContainer.addEventListener('click', (e) => {
+    if (e.target.tagName.toLowerCase() === 'li') {
+        selectedProjectId = e.target.dataset.projectId
+        saveAndRender();
+    }
+})
 
 projectContainer.addEventListener('click', (e) => {
     if (e.target.tagName.toLowerCase() === 'li') {
@@ -46,13 +46,19 @@ projectContainer.addEventListener('click', (e) => {
     }
 })
 
+projectsDropdownButton.addEventListener('click', () => {
+    projectsDropdownContent.classList.toggle('dropdown-content-active');
+})
+
 projectTasksContainer.addEventListener('change', e => {
     if (e.target.tagName.toLowerCase() === 'input') {
-        const selectedProject = projects.find(project => project.id === selectedProjectId)
+        const selectedProject = getSelectedProject(selectedProjectId)
+
         const selectedTask = selectedProject.tasks.find(task => task.id === e.target.id)
         selectedTask.complete = e.target.checked
         //true or false depending on if box is checked
         saveAndRender();
+
     }
 })
 
@@ -82,19 +88,33 @@ newTaskForm.addEventListener('submit', (e) => {
 
 
 deleteProject.addEventListener('click', e => {
+    if (selectedProjectId === 'today-id' || selectedProjectId === 'this-week-id') return
     projects = projects.filter((project) => project.id !== selectedProjectId);
     selectedProjectId = null;
     saveAndRender();
 })
 
 deleteCompleteTasks.addEventListener('click', e => {
-    const selectedProject = projects.find(project => project.id === selectedProjectId);
-    selectedProject.tasks = selectedProject.tasks.filter(task => task.complete !== true);
-    saveAndRender();
+    const selectedProject = getSelectedProject(selectedProjectId);
+
+    if (selectedProjectId === 'today-id' || selectedProjectId === 'this-week-id') {
+        const completedTasks = selectedProject.tasks.filter(task => task.complete === true)
+
+
+        projects.forEach(project => {
+            project.tasks = project.tasks.filter(task =>
+                !completedTasks.includes(task))
+        })
+        saveAndRender();
+    } else {
+        selectedProject.tasks = selectedProject.tasks.filter(task => task.complete !== true);
+        saveAndRender();
+    }
+
 })
 
 sortButton.addEventListener('click', (e) => {
-    const selectedProject = projects.find(project => project.id === selectedProjectId);
+    const selectedProject = getSelectedProject(selectedProjectId);
     selectedProject.tasks = selectedProject.tasks.sort(function (a, b) {
         if (a.dueDate < b.dueDate) {
             return -1;
@@ -119,9 +139,16 @@ function saveProjects() {
 
 function render() {
     clearElement(projectContainer)
+    clearElement(defaultProjectsContainer)
+    createDefaultProjects();
+    renderDefaultProjects();
     renderProjects();
+    updateTodayTasks();
+    updateThisWeekTasks();
 
-    const selectedProject = (projects.find(project => project.id === selectedProjectId))
+    let selectedProject = getSelectedProject(selectedProjectId);
+
+
 
     if (selectedProjectId == null) {
         taskDisplayContainer.style.display = 'none'
@@ -133,6 +160,22 @@ function render() {
     }
 
 
+}
+
+function renderDefaultProjects() {
+    // add project id to elements
+    defaultProjects.forEach(project => {
+        const defaultProjectElement = document.createElement('li');
+
+        defaultProjectElement.dataset.projectId = project.id;
+        defaultProjectElement.classList.add('default-project-name');
+        defaultProjectElement.textContent = project.name;
+
+        if (project.id === selectedProjectId) {
+            defaultProjectElement.classList.add('active-project');
+        }
+        defaultProjectsContainer.appendChild(defaultProjectElement);
+    })
 }
 
 
@@ -182,6 +225,64 @@ function clearElement(element) {
     }
 }
 
+function createDefaultProjects() {
+    if (defaultProjects.length > 0) return
+    const todayProject = projectFactory('Today', 'today-id');
+    const thisWeekProject = projectFactory('This Week', 'this-week-id');
+    defaultProjects.push(todayProject)
+    defaultProjects.push(thisWeekProject)
+}
+
+function updateTodayTasks() {
+    defaultProjects[0].tasks = []
+    projects.forEach((project) => {
+        project.tasks.forEach((task) => {
+            if (isToday(parseISO(task.dueDate))) {
+                defaultProjects[0].tasks.push(task);
+            }
+        })
+    })
+
+    defaultProjects[0].tasks = defaultProjects[0].tasks.sort(function (a, b) {
+        if (a.dueDate < b.dueDate) {
+            return -1;
+        }
+        if (a.dueDate > b.dueDate) {
+            return 1;
+        }
+        if (a.dueDate === b.dueDate) {
+            return 0
+        }
+    })
+}
+
+
+function updateThisWeekTasks() {
+    defaultProjects[1].tasks = [];
+    projects.forEach((project) => {
+        project.tasks.forEach((task) => {
+            if (isThisWeek(parseISO((task.dueDate), { weekStartsOn: 1 })) === true) {
+                defaultProjects[1].tasks.push(task);
+            }
+        })
+    })
+
+    defaultProjects[1].tasks = defaultProjects[1].tasks.sort(function (a, b) {
+        if (a.dueDate < b.dueDate) {
+            return -1;
+        }
+        if (a.dueDate > b.dueDate) {
+            return 1;
+        }
+        if (a.dueDate === b.dueDate) {
+            return 0
+        }
+    })
+}
+
+function getSelectedProject(selectedProjectId) {
+    return (projects.find(project => project.id === selectedProjectId)) || (defaultProjects.find(project => project.id === selectedProjectId))
+}
 
 
 render();

@@ -1,37 +1,10 @@
-import { isToday, isThisWeek } from 'date-fns';
+import { isToday, isThisWeek, parseISO } from 'date-fns';
 
-export default function projectFactory(name) {
+export default function projectFactory(name, id) {
     return {
-        id: Date.now().toString(),
+        id: id || Date.now().toString(),
         name: name,
         tasks: [],
     }
 }
 
-
-function getTasks() {
-    return this.tasks;
-}
-
-function getTasksToday(project) {
-    return project.tasks.filter((task) => {
-        if (isToday(task.dueDate)) {
-            return task;
-        }
-    })
-}
-
-function getTasksThisWeek() {
-    return this.tasks.filter((task) => {
-        if (isThisWeek((task.dueDate), { weekStartsOn: 1 }) === true) {
-            return task;
-        }
-    })
-}
-
-
-export {
-    getTasks,
-    getTasksToday,
-    getTasksThisWeek
-}
