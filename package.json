@@ -18,7 +18,13 @@
   },
   "homepage": "https://github.com/MonnyOsu/monnyosu.github.io#readme",
   "devDependencies": {
+    "eslint": "^8.10.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "date-fns": "^2.28.0"
   }
 }
